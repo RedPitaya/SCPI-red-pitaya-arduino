@@ -15,6 +15,8 @@ bool setAcqReset(BaseIO *io);
 bool setAcqResetCh(BaseIO *io, scpi_rp::EACQChannel channel);
 bool setAcqSplitTriggerMode(BaseIO *io, bool enable);
 bool getAcqSplitTriggerMode(BaseIO *io, bool *enable);
+bool setAcq16BitMode(BaseIO *io, bool enable);
+bool getAcq16BitMode(BaseIO *io, bool *enable);
 
 }  // namespace scpi_rp
 

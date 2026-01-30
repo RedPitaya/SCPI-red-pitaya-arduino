@@ -152,6 +152,22 @@ bool scpi_rp::getSYSBoardName(BaseIO *io, char *name, scpi_size size) {
   return false;
 }
 
+bool scpi_rp::getSYSVersion(BaseIO *io, char *name, scpi_size size) {
+  constexpr char cmd[] = "SYSTem:VERSion?\r\n";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  auto value = io->read();
+  if (value.isValid) {
+    memset(name, 0, size);
+    strncpy(name, value.value, value.size < size - 1 ? value.size : size - 1);
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
 bool scpi_rp::setCls(BaseIO *io) {
   constexpr char cmd[] = "*CLS\r\n";
   if (!io->writeStr(cmd)) {
