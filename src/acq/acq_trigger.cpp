@@ -56,6 +56,24 @@ bool scpi_rp::setAcqTrigger(BaseIO *io, EACQTrigger trigger) {
   } else if (trigger == ACQ_CH4_NE) {
     constexpr char param[] = "CH4_NE\r\n";
     return io->writeStr(param);
+  } else if (trigger == ACQ_CH1_AE) {
+    constexpr char param[] = "CH1_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH2_AE) {
+    constexpr char param[] = "CH2_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_EXT_AE) {
+    constexpr char param[] = "EXT_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_AWG_AE) {
+    constexpr char param[] = "AWG_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH3_AE) {
+    constexpr char param[] = "CH3_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH4_AE) {
+    constexpr char param[] = "CH4_AE\r\n";
+    return io->writeStr(param);
   }
 
   io->writeCommandSeparator();
@@ -115,6 +133,24 @@ bool scpi_rp::setAcqTriggerCh(BaseIO *io, EACQChannel channel,
     return io->writeStr(param);
   } else if (trigger == ACQ_CH4_NE) {
     constexpr char param[] = " CH4_NE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH1_AE) {
+    constexpr char param[] = " CH1_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH2_AE) {
+    constexpr char param[] = " CH2_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_EXT_AE) {
+    constexpr char param[] = " EXT_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_AWG_AE) {
+    constexpr char param[] = " AWG_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH3_AE) {
+    constexpr char param[] = " CH3_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH4_AE) {
+    constexpr char param[] = " CH4_AE\r\n";
     return io->writeStr(param);
   }
 
@@ -472,6 +508,219 @@ bool scpi_rp::getAcqExtTriggerDebouncerQ(BaseIO *io, double *_value) {
   };
   constexpr char cmd[] = "ACQ:TRig:EXT:DEBouncer:US?\r\n";
   if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}
+
+bool scpi_rp::acqTriggerInterruptQ(BaseIO *io, int timeout_ms,
+                                   EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":STAT?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::acqTriggerInterruptChQ(BaseIO *io, EACQChannel channel,
+                                     int timeout_ms, EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":STAT:CH";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd3[] = "?\r\n";
+  if (!io->writeStr(cmd3)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::acqFillInterruptQ(BaseIO *io, int timeout_ms,
+                                EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":FILL?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::acqFillInterruptChQ(BaseIO *io, EACQChannel channel,
+                                  int timeout_ms, EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":FILL:CH";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd3[] = "?\r\n";
+  if (!io->writeStr(cmd3)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::setAcqTimestamp(BaseIO *io, uint64_t timestamp) {
+  constexpr char cmd[] = "ACQ:TS ";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumberU64(timestamp)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return io->writeCommandSeparator();
+}
+
+bool scpi_rp::getAcqTimestampQ(BaseIO *io, EACQChannel channel,
+                               uint64_t *_value) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *_value = io->atou64_dec(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+  constexpr char cmd[] = "ACQ:TS:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = "?\r\n";
+  if (!io->writeStr(cmd2)) {
     io->writeCommandSeparator();
     return false;
   }

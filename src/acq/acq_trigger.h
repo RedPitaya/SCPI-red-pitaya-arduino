@@ -29,6 +29,16 @@ bool getAcqExtTriggerLevelQ(BaseIO *io, float *value);
 bool setAcqExtTriggerDebouncer(BaseIO *io, double value);
 bool getAcqExtTriggerDebouncerQ(BaseIO *io, double *value);
 
+bool acqTriggerInterruptQ(BaseIO *io, int timeout_ms, EACQIntTrigger *state);
+bool acqTriggerInterruptChQ(BaseIO *io, EACQChannel channel, int timeout_ms,
+                            EACQIntTrigger *state);
+bool acqFillInterruptQ(BaseIO *io, int timeout_ms, EACQIntTrigger *state);
+bool acqFillInterruptChQ(BaseIO *io, EACQChannel channel, int timeout_ms,
+                         EACQIntTrigger *state);
+
+bool setAcqTimestamp(BaseIO *io, uint64_t timestamp);
+bool getAcqTimestampQ(BaseIO *io, EACQChannel channel, uint64_t *timestamp);
+
 }  // namespace scpi_rp
 
 #endif
