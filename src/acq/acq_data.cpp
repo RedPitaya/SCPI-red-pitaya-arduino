@@ -356,3 +356,52 @@ bool scpi_rp::getAcqGetDataFromTrigger(BaseIO *io, EACQChannel channel,
     return true;
   }
 }
+
+bool scpi_rp::setAcqOffset(BaseIO *io, EACQChannel channel, float offset) {
+  constexpr char cmd[] = "ACQ:SOUR";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = ":OFFS ";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(offset, 6, 4)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return io->writeCommandSeparator();
+}
+
+bool scpi_rp::getAcqOffset(BaseIO *io, EACQChannel channel, float *offset) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *offset = atof(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+  constexpr char cmd[] = "ACQ:SOUR";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = ":OFFS?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}
