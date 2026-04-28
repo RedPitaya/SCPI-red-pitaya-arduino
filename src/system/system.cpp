@@ -21,7 +21,7 @@ bool scpi_rp::setSYSLog(BaseIO *io, ESYSLog mode) {
     constexpr char param[] = "CONSOLE\r\n";
     return io->writeStr(param);
   }
-  if (mode == ESYSLog::OFF) {
+  if (mode == ESYSLog::SYS_LOG) {
     constexpr char param[] = "SYS_LOG\r\n";
     return io->writeStr(param);
   }
@@ -78,6 +78,8 @@ bool scpi_rp::getSYSTime(BaseIO *io, uint8_t *hour, uint8_t *min,
 
 bool scpi_rp::setSYSDate(BaseIO *io, uint16_t year, uint8_t month,
                          uint8_t day) {
+  if (month > 12) return false;
+  if (day > 31) return false;
   constexpr char cmd[] = "SYSTem:DATE \"";
   if (!io->writeStr(cmd)) {
     io->writeCommandSeparator();
@@ -314,7 +316,7 @@ bool scpi_rp::getErr_c(BaseIO *io, uint16_t *_value) {
 }
 
 bool scpi_rp::getErr_n(BaseIO *io, char *name, scpi_size size) {
-  constexpr char cmd[] = "SYST:ERR:NEXT?r\n";
+  constexpr char cmd[] = "SYST:ERR:NEXT?\r\n";
   if (!io->writeStr(cmd)) {
     io->writeCommandSeparator();
     return false;

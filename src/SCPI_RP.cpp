@@ -20,9 +20,16 @@ BaseIO *g_base_io = nullptr;
 
 SCPIRedPitaya::SCPIRedPitaya() {}
 
-SCPIRedPitaya::~SCPIRedPitaya() { delete g_base_io; }
+SCPIRedPitaya::~SCPIRedPitaya() {
+  if (g_base_io != nullptr) {
+    delete g_base_io;
+  }
+}
 
 void SCPIRedPitaya::initStream(Stream *serial) {
+  if (g_base_io != nullptr) {
+    delete g_base_io;
+  }
   UARTInterface *u = new UARTInterface();
   u->init(serial);
   g_base_io = u;

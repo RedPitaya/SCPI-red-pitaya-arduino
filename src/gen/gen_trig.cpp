@@ -63,7 +63,7 @@ bool scpi_rp::getGenTrigSource(BaseIO *io, EGENChannel channel,
       *mode = EGENTrigger::GEN_INT;
     } else if (strcmp(value.value, "EXT_PE") == 0) {
       *mode = EGENTrigger::GEN_EXT_PE;
-    } else if (strcmp(value.value, "EXT_PE") == 0) {
+    } else if (strcmp(value.value, "EXT_NE") == 0) {
       *mode = EGENTrigger::GEN_EXT_NE;
     } else {
       io->flushCommand(value.next_value);
