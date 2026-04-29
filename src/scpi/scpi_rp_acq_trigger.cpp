@@ -149,3 +149,14 @@ bool SCPIAcqTrigger::timeStampQ(EACQChannel channel, uint64_t *value) {
   if (m_io == nullptr) return false;
   return getAcqTimestampQ(m_io, channel, value);
 }
+
+bool SCPIAcqTrigger::preTriggerCounterQ(uint32_t *value) {
+  if (m_io == nullptr) return false;
+  return getAcqPreTriggerCounterQ(m_io, value);
+}
+
+bool SCPIAcqTrigger::preTriggerCounterChQ(EACQChannel channel,
+                                          uint32_t *value) {
+  if (m_io == nullptr) return false;
+  return getAcqPreTriggerCounterChQ(m_io, channel, value);
+}

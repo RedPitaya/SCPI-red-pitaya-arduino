@@ -283,6 +283,33 @@ class SCPIAcqTrigger {
    */
   bool timeStampQ(EACQChannel channel, uint64_t *value);
 
+  /*!
+   * Returns the number of valid data points (samples) in the buffer that were
+   * captured before the trigger event occurred. This value indicates how many
+   * samples are available in the pre-trigger portion of the buffer.
+   *
+   * @param value Pointer to uint32_t where the pre-trigger sample count will
+   *        be stored.
+   * @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool preTriggerCounterQ(uint32_t *value);
+
+  /*!
+   * Returns the number of valid data points (samples) in the buffer before the
+   * trigger position for the specified channel. This channel-separated version
+   * works with FPGA support for split trigger mode.
+   *
+   * @param channel The analog input channel:
+   *        - RP_CH_1 (IN1) or RP_CH_3 for 4-input models
+   *        - RP_CH_2 (IN2) or RP_CH_4 for 4-input models
+   * @param value Pointer to uint32_t where the pre-trigger sample count for the
+   *        specified channel will be stored.
+   * @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool preTriggerCounterChQ(EACQChannel channel, uint32_t *value);
+
   friend class SCPIRedPitaya;
 
  private:

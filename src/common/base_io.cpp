@@ -66,6 +66,32 @@ uint64_t BaseIO::atou64_dec(const char *str) {
   return result;
 }
 
+uint32_t BaseIO::atou32_dec(const char *str) {
+  uint32_t result = 0;
+  int i = 0;
+
+  while (isspace(str[i])) {
+    i++;
+  }
+
+  if (str[i] == '\0') {
+    return 0;
+  }
+
+  while (isdigit(str[i])) {
+    uint8_t digit = str[i] - '0';
+
+    if (result > UINT32_MAX / 10 ||
+        (result == UINT32_MAX / 10 && digit > UINT32_MAX % 10)) {
+      return UINT32_MAX;
+    }
+
+    result = result * 10 + digit;
+    i++;
+  }
+  return result;
+}
+
 BaseIO::BaseIO() {
   m_bufferSize = 0;
   m_bufferReadPos = 0;

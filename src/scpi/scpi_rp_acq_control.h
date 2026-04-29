@@ -34,8 +34,7 @@ class SCPIAcqControl {
   bool start();
 
   /*!
-   *  Start the acquisition. Used only in split trigger mode (currently only
-   *  STEMlab 125-14 4-Input)
+   *  Start the acquisition. Used only in split trigger mode
    *  @param channel In channel
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
@@ -50,8 +49,7 @@ class SCPIAcqControl {
   bool stop();
 
   /*!
-   *  Stop the acquisition. Used only in split trigger mode (currently only
-   *  STEMlab 125-14 4-Input)
+   *  Stop the acquisition. Used only in split trigger mode
    *  @param channel In channel
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
@@ -68,8 +66,7 @@ class SCPIAcqControl {
 
   /*!
    *  Stop the acquisition and reset all acquisition parameters to default
-   *  values. Used only in split trigger mode (currently only STEMlab 125-14
-   *  4-Input)
+   *  values. Used only in split trigger mode
    *  @param channel In channel
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
@@ -77,7 +74,7 @@ class SCPIAcqControl {
   bool resetCh(EACQChannel channel);
 
   /*!
-   *  Enables split trigger mode. (currently only STEMlab 125-14 4-Input)
+   *  Enables split trigger mode.
    *  @param enable Enable or disable split trigger
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
@@ -85,13 +82,42 @@ class SCPIAcqControl {
   bool splitTriggerMode(bool enable);
 
   /*!
-   *  Returns the split trigger mode status (currently only STEMlab 125-14
-   *  4-Input)
+   *  Returns the split trigger mode status
    *  @param enable Return split trigger
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool splitTriggerModeQ(bool *enable);
+
+  /*!
+   * Enables continuous acquisition mode where the buffer continues to fill
+   * even after a trigger event has occurred. When enabled (true), the
+   * acquisition does not stop at trigger and continuously overwrites the
+   * buffer. When disabled (false), acquisition stops after trigger and buffer
+   * is frozen.
+   *
+   * @param enable Enable or disable ARM keep mode:
+   *        - true: Continuous acquisition after trigger (buffer keeps filling)
+   *        - false: Stop acquisition after trigger (buffer frozen)
+   * @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool keepArm(bool enable);
+
+  /*!
+   * Returns the current status of the ARM keep mode.
+   * When enabled, acquisition continues after trigger and the buffer is
+   * continuously overwritten. When disabled, acquisition stops at trigger
+   * and the buffer contains only data up to the trigger event.
+   *
+   * @param enable Pointer to bool where the current ARM keep mode status
+   *        will be stored:
+   *        - true: Continuous acquisition after trigger is enabled
+   *        - false: Continuous acquisition after trigger is disabled
+   * @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool keepArmQ(bool *enable);
 
   friend class SCPIRedPitaya;
 

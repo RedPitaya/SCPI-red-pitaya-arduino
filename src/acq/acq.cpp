@@ -104,6 +104,34 @@ bool scpi_rp::getAcqSplitTriggerMode(BaseIO *io, bool *enable) {
   return readValue();
 }
 
+bool scpi_rp::setAcqKeepArm(BaseIO *io, bool enable) {
+  constexpr char cmd[] = "ACQ:KEEP:ARM ";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return io->writeOnOff(enable);
+}
+
+bool scpi_rp::getAcqKeepArm(BaseIO *io, bool *enable) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *enable = atof(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+
+  constexpr char cmd[] = "ACQ:KEEP:ARM?\r\n";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}
+
 bool scpi_rp::setAcq16BitMode(BaseIO *io, bool enable) {
   constexpr char cmd[] = "ACQ:M16BIT ";
   if (!io->writeStr(cmd)) {

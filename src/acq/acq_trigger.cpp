@@ -726,3 +726,49 @@ bool scpi_rp::getAcqTimestampQ(BaseIO *io, EACQChannel channel,
   }
   return readValue();
 }
+
+bool scpi_rp::getAcqPreTriggerCounterQ(BaseIO *io, uint32_t *_value) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *_value = io->atou32_dec(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+  constexpr char cmd[] = "ACQ:TRig:PRE:COUNTER?\r\n";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}
+
+bool scpi_rp::getAcqPreTriggerCounterChQ(BaseIO *io, EACQChannel channel,
+                                         uint32_t *_value) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *_value = io->atou32_dec(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+  constexpr char cmd[] = "ACQ:TRig:PRE:COUNTER:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = "?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}

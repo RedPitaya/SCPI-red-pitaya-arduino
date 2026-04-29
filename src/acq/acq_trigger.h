@@ -39,6 +39,10 @@ bool acqFillInterruptChQ(BaseIO *io, EACQChannel channel, int timeout_ms,
 bool setAcqTimestamp(BaseIO *io, uint64_t timestamp);
 bool getAcqTimestampQ(BaseIO *io, EACQChannel channel, uint64_t *timestamp);
 
+bool getAcqPreTriggerCounterQ(BaseIO *io, uint32_t *counter);
+bool getAcqPreTriggerCounterChQ(BaseIO *io, EACQChannel channel,
+                                uint32_t *counter);
+
 }  // namespace scpi_rp
 
 #endif
