@@ -160,3 +160,25 @@ bool SCPIAcqTrigger::preTriggerCounterChQ(EACQChannel channel,
   if (m_io == nullptr) return false;
   return getAcqPreTriggerCounterChQ(m_io, channel, value);
 }
+
+bool SCPIAcqTrigger::intEnable(EACQIntMode mode, bool enable) {
+  if (m_io == nullptr) return false;
+  return setAcqTriggerIntEnable(m_io, mode, enable);
+}
+
+bool SCPIAcqTrigger::intEnableQ(EACQIntMode mode, bool *enable) {
+  if (m_io == nullptr) return false;
+  return getAcqTriggerIntEnableQ(m_io, mode, enable);
+}
+
+bool SCPIAcqTrigger::intEnableCh(EACQChannel channel, EACQIntMode mode,
+                                 bool enable) {
+  if (m_io == nullptr) return false;
+  return setAcqTriggerIntEnableCh(m_io, channel, mode, enable);
+}
+
+bool SCPIAcqTrigger::intEnableChQ(EACQChannel channel, EACQIntMode mode,
+                                  bool *enable) {
+  if (m_io == nullptr) return false;
+  return getAcqTriggerIntEnableChQ(m_io, channel, mode, enable);
+}

@@ -310,6 +310,62 @@ class SCPIAcqTrigger {
    */
   bool preTriggerCounterChQ(EACQChannel channel, uint32_t *value);
 
+  /*!
+   *  Enables or disables interrupt generation for the specified interrupt
+   * event.
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met (edge, level, etc.)
+   *         - ACQ_INT_FILL (1): Buffer full, data ready for processing
+   *  @param enable True to enable interrupt generation, false to disable
+   * (mask).
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnable(EACQIntMode mode, bool enable);
+
+  /*!
+   *  Returns the current interrupt enable/disable status for the specified
+   *  interrupt event.
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met
+   *         - ACQ_INT_FILL (1): Buffer full event
+   *  @param enable Pointer to bool where the current status will be stored:
+   *         - true: Interrupt is enabled
+   *         - false: Interrupt is disabled (masked)
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnableQ(EACQIntMode mode, bool *enable);
+
+  /*!
+   *  Enables or disables interrupt generation for the specified channel and
+   *  interrupt event. Used only in split trigger mode.
+   *  @param channel Fast ADC channel (RP_CH_1, RP_CH_2, RP_CH_3, RP_CH_4)
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met
+   *         - ACQ_INT_FILL (1): Buffer full event
+   *  @param enable True to enable interrupt generation, false to disable
+   * (mask).
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnableCh(EACQChannel channel, EACQIntMode mode, bool enable);
+
+  /*!
+   *  Returns the current interrupt enable/disable status for the specified
+   *  channel and interrupt event. Used only in split trigger mode.
+   *  @param channel Fast ADC channel (RP_CH_1, RP_CH_2, RP_CH_3, RP_CH_4)
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met
+   *         - ACQ_INT_FILL (1): Buffer full event
+   *  @param enable Pointer to bool where the current status will be stored:
+   *         - true: Interrupt is enabled
+   *         - false: Interrupt is disabled (masked)
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnableChQ(EACQChannel channel, EACQIntMode mode, bool *enable);
+
   friend class SCPIRedPitaya;
 
  private:

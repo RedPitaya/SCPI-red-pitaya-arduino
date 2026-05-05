@@ -43,6 +43,13 @@ bool getAcqPreTriggerCounterQ(BaseIO *io, uint32_t *counter);
 bool getAcqPreTriggerCounterChQ(BaseIO *io, EACQChannel channel,
                                 uint32_t *counter);
 
+bool setAcqTriggerIntEnable(BaseIO *io, EACQIntMode mode, bool enable);
+bool getAcqTriggerIntEnableQ(BaseIO *io, EACQIntMode mode, bool *enable);
+bool setAcqTriggerIntEnableCh(BaseIO *io, EACQChannel channel, EACQIntMode mode,
+                              bool enable);
+bool getAcqTriggerIntEnableChQ(BaseIO *io, EACQChannel channel,
+                               EACQIntMode mode, bool *enable);
+
 }  // namespace scpi_rp
 
 #endif

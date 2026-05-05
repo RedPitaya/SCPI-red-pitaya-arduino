@@ -772,3 +772,173 @@ bool scpi_rp::getAcqPreTriggerCounterChQ(BaseIO *io, EACQChannel channel,
   }
   return readValue();
 }
+
+bool scpi_rp::setAcqTriggerIntEnable(BaseIO *io, EACQIntMode mode,
+                                     bool enable) {
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE ";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write enable state (1 or 0)
+  if (!io->writeNumber(enable ? 1 : 0)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  return io->writeCommandSeparator();
+}
+
+bool scpi_rp::getAcqTriggerIntEnableQ(BaseIO *io, EACQIntMode mode,
+                                      bool *enable) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *enable = (atoi(value.value) != 0);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE? ";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  return readValue();
+}
+
+bool scpi_rp::setAcqTriggerIntEnableCh(BaseIO *io, EACQChannel channel,
+                                       EACQIntMode mode, bool enable) {
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = " ";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write enable state (1 or 0)
+  if (!io->writeNumber(enable ? 1 : 0)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  return io->writeCommandSeparator();
+}
+
+bool scpi_rp::getAcqTriggerIntEnableChQ(BaseIO *io, EACQChannel channel,
+                                        EACQIntMode mode, bool *enable) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *enable = (atoi(value.value) != 0);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = "? ";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  return readValue();
+}

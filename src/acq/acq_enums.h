@@ -76,6 +76,14 @@ enum EACQPosition {
 
 enum EACQIntTrigger { ACQ_TR_OK = 0, ACQ_TR_TIMEOUT = 1, ACQ_TR_ERROR = 2 };
 
+/**
+ * Interrupt event sources for signal acquisition.
+ */
+typedef enum {
+  ACQ_INT_TRIGGER = 0, /**< Trigger condition met (edge, level, etc.) */
+  ACQ_INT_FILL = 1     /**< Buffer full; data ready for processing */
+} EACQIntMode;
+
 }  // namespace scpi_rp
 
 #endif
