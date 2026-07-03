@@ -26,6 +26,10 @@ bool getAcqGetDataFullBuffer(BaseIO *io, EACQChannel channel, float *value,
 bool getAcqGetDataFromTrigger(BaseIO *io, EACQChannel channel,
                               EACQPosition mode, uint32_t size, float *value,
                               bool *last);
+
+bool setAcqOffset(BaseIO *io, EACQChannel channel, float offset);
+bool getAcqOffset(BaseIO *io, EACQChannel channel, float *offset);
+
 }  // namespace scpi_rp
 
 #endif

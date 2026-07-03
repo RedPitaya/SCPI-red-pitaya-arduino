@@ -109,7 +109,7 @@ bool scpi_rp::getAcqDMADecimationCh(BaseIO *io, EACQChannel channel,
     }
     return false;
   };
-  constexpr char cmd[] = "ACQ:DEC:Factor:CH";
+  constexpr char cmd[] = "ACQ:AXI:DEC:CH";
   if (!io->writeStr(cmd)) {
     io->writeCommandSeparator();
     return false;

@@ -71,7 +71,7 @@ bool scpi_rp::setDAISYTrigOSource(BaseIO *io, EDAISYMode mode) {
     constexpr char param[] = "ADC\r\n";
     return io->writeStr(param);
   }
-  if (mode == EDAISYMode::DAISY_ADC) {
+  if (mode == EDAISYMode::DAISY_DAC) {
     constexpr char param[] = "DAC\r\n";
     return io->writeStr(param);
   }

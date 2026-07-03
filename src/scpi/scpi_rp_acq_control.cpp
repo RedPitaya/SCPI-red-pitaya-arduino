@@ -57,3 +57,13 @@ bool SCPIAcqControl::splitTriggerModeQ(bool *enable) {
   if (m_io == nullptr) return false;
   return getAcqSplitTriggerMode(m_io, enable);
 }
+
+bool SCPIAcqControl::keepArm(bool enable) {
+  if (m_io == nullptr) return false;
+  return setAcqKeepArm(m_io, enable);
+}
+
+bool SCPIAcqControl::keepArmQ(bool *enable) {
+  if (m_io == nullptr) return false;
+  return getAcqKeepArm(m_io, enable);
+}

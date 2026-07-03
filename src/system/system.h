@@ -14,6 +14,7 @@ bool setSYSDate(BaseIO *io, uint16_t year, uint8_t month, uint8_t day);
 bool getSYSDate(BaseIO *io, uint16_t *year, uint8_t *month, uint8_t *day);
 bool getSYSBoardID(BaseIO *io, uint32_t *id);
 bool getSYSBoardName(BaseIO *io, char *name, scpi_size size);
+bool getSYSVersion(BaseIO *io, char *name, scpi_size size);
 
 bool setCls(BaseIO *io);
 bool setEse(BaseIO *io, uint8_t _value);

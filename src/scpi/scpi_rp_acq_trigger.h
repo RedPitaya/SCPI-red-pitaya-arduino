@@ -38,7 +38,6 @@ class SCPIAcqTrigger {
   /*!
    *  Set acquisition trigger source. The options are disabled, trigger
    *  immediately, or set trigger source & edge. Used only in split trigger mode
-   *  (currently only STEMlab 125-14 4-Input)
    *  @param channel Fast ADC channel
    *  @param trigger Trigger source.
    *  @return Returns true if the command was called successfully, returns false
@@ -49,8 +48,8 @@ class SCPIAcqTrigger {
   /*!
    *  Get acquisition trigger status. If the trigger is DISABLED or the
    *  acquisition is triggered, the state is True. Otherwise, it is False.
-   *  @param channel Fast ADC channel
-   *  @param state Trigger state.
+   *  @param state Trigger state (true = triggered or disabled, false =
+   * waiting).
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
@@ -59,17 +58,44 @@ class SCPIAcqTrigger {
   /*!
    *  Get acquisition trigger status. If the trigger is DISABLED or the
    *  acquisition is triggered, the state is True. Otherwise, it is False. Used
-   *  only in split trigger mode (currently only STEMlab 125-14 4-Input)
+   *  only in split trigger mode.
    *  @param channel Fast ADC channel
-   *  @param state Trigger state.
+   *  @param state Trigger state (true = triggered or disabled, false =
+   * waiting).
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool stateChQ(EACQChannel channel, bool *state);
 
   /*!
+   *  Get acquisition trigger status with internal timeout handling.
+   *  @param timeout_ms Timeout in milliseconds.
+   *  @param state Trigger state:
+   *         - ACQ_TR_OK (0) - Trigger occurred successfully
+   *         - ACQ_TR_TIMEOUT (1) - Timeout elapsed without trigger
+   *         - ACQ_TR_ERROR (2) - Error occurred
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool stateIntQ(int timeout_ms, EACQIntTrigger *state);
+
+  /*!
+   *  Get acquisition trigger status with internal timeout handling for a
+   * specific channel. Used only in split trigger mode.
+   *  @param channel Fast ADC channel
+   *  @param timeout_ms Timeout in milliseconds.
+   *  @param state Trigger state:
+   *         - ACQ_TR_OK (0) - Trigger occurred successfully
+   *         - ACQ_TR_TIMEOUT (1) - Timeout elapsed without trigger
+   *         - ACQ_TR_ERROR (2) - Error occurred
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool stateIntChQ(EACQChannel channel, int timeout_ms, EACQIntTrigger *state);
+
+  /*!
    *  Returns True if the buffer is full of data. Otherwise returns False.
-   *  @param state Fill state.
+   *  @param state Fill state (true = buffer full, false = not full).
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
@@ -77,19 +103,46 @@ class SCPIAcqTrigger {
 
   /*!
    *  Returns True if the buffer is full of data. Otherwise returns False. Used
-   *  only in split trigger mode (currently only STEMlab 125-14 4-Input)
+   *  only in split trigger mode.
    *  @param channel Fast ADC channel
-   *  @param state Fill state.
+   *  @param state Fill state (true = buffer full, false = not full).
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool fillChQ(EACQChannel channel, bool *state);
 
   /*!
+   *  Returns the buffer fill status with timeout handling.
+   *  @param timeout_ms Timeout in milliseconds.
+   *  @param state Fill state:
+   *         - ACQ_TR_OK (0) - Buffer filled successfully
+   *         - ACQ_TR_TIMEOUT (1) - Timeout elapsed without buffer fill
+   *         - ACQ_TR_ERROR (2) - Error occurred
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool fillIntQ(int timeout_ms, EACQIntTrigger *state);
+
+  /*!
+   *  Returns the buffer fill status with timeout handling for a specific
+   * channel. Used only in split trigger mode (currently only STEMlab 125-14
+   * 4-Input)
+   *  @param channel Fast ADC channel
+   *  @param timeout_ms Timeout in milliseconds.
+   *  @param state Fill state:
+   *         - ACQ_TR_OK (0) - Buffer filled successfully
+   *         - ACQ_TR_TIMEOUT (1) - Timeout elapsed without buffer fill
+   *         - ACQ_TR_ERROR (2) - Error occurred
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool fillIntChQ(EACQChannel channel, int timeout_ms, EACQIntTrigger *state);
+
+  /*!
    *  Set the trigger delay in samples. The triggering moment is by default in
    *  the middle of acquired buffer (at 8192th sample) (trigger delay set to 0).
    *  Total samples: 8192 + delay
-   *  @param value Number of samples
+   *  @param value Number of samples.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
@@ -98,7 +151,7 @@ class SCPIAcqTrigger {
   /*!
    *  Set the trigger delay in samples. The triggering moment is by default in
    *  the middle of acquired buffer (at 8192th sample) (trigger delay set to 0).
-   *  Used only in split trigger mode (currently only STEMlab 125-14 4-Input)
+   *  Used only in split trigger mode.
    *  Total samples: 8192 + delay
    *  @param channel Fast ADC channel
    *  @param value Number of samples.
@@ -116,8 +169,7 @@ class SCPIAcqTrigger {
   bool delayQ(int *value);
 
   /*!
-   *  Get the trigger delay in samples. Used only in split trigger mode
-   *  (currently only STEMlab 125-14 4-Input)
+   *  Get the trigger delay in samples. Used only in split trigger mode.
    *  @param channel Fast ADC channel
    *  @param value Number of samples.
    *  @return Returns true if the command was called successfully, returns false
@@ -127,7 +179,7 @@ class SCPIAcqTrigger {
 
   /*!
    *  Set the trigger hysteresis threshold value in Volts.
-   *  @param value Hysteresis value
+   *  @param value Hysteresis value in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
@@ -135,59 +187,59 @@ class SCPIAcqTrigger {
 
   /*!
    *  Get the trigger hysteresis threshold value in Volts.
-   *  @param value Return hysteresis
+   *  @param value Return hysteresis value in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool hysteresisQ(float *value);
 
   /*!
-   *  Set the trigger level in V.
-   *  @param value Trigger value.
+   *  Set the trigger level in Volts.
+   *  @param value Trigger level in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool level(float value);
 
   /*!
-   *  Get the trigger level in V.
-   *  @param value Return trigger value.
+   *  Get the trigger level in Volts.
+   *  @param value Return trigger level in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool levelQ(float *value);
 
   /*!
-   *  Set the trigger level in V. Used only in split trigger mode (currently
-   *  only STEMlab 125-14 4-Input)
+   *  Set the trigger level in Volts for a specific channel. Used only in split
+   * trigger mode.
    *  @param channel Fast ADC channel
-   *  @param value Trigger value.
+   *  @param value Trigger level in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool levelCh(EACQChannel channel, float value);
 
   /*!
-   *  Get the decimation factor. Used only in split trigger mode (currently only
-   *  STEMlab 125-14 4-Input)
+   *  Get the trigger level in Volts for a specific channel. Used only in split
+   * trigger mode.
    *  @param channel Fast ADC channel
-   *  @param value Return trigger value.
+   *  @param value Return trigger level in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool levelChQ(EACQChannel channel, float *value);
 
   /*!
-   *  Set the external trigger level in V. (Only SIGNALlab 250-12)
-   *  @param value Return trigger value.
+   *  Set the external trigger level in Volts. (Only SIGNALlab 250-12)
+   *  @param value Trigger level in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool levelExternal(float value);
 
   /*!
-   *  Get the external trigger level in V. (Only SIGNALlab 250-12)
-   *  @param value Return trigger value.
+   *  Get the external trigger level in Volts. (Only SIGNALlab 250-12)
+   *  @param value Return trigger level in Volts.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
@@ -196,7 +248,7 @@ class SCPIAcqTrigger {
   /*!
    *  Set the external trigger acquisition debouncer in microseconds (value must
    *  be positive).
-   *  @param value Sets decimation on selected channel.
+   *  @param value Debouncer time in microseconds.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
@@ -204,11 +256,115 @@ class SCPIAcqTrigger {
 
   /*!
    *  Get the external trigger acquisition debouncer in microseconds
-   *  @param value Sets decimation on selected channel.
+   *  @param value Return debouncer time in microseconds.
    *  @return Returns true if the command was called successfully, returns false
    * for any other problems.
    */
   bool debouncerQ(double *value);
+
+  /*!
+   *  Initialize the acquisition timestamp counter with a specific value.
+   *  Sets the initial value for the timestamp counter used in acquisition
+   *  triggering and data capture.
+   *  @param value Initial timestamp value.
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool initTimeStamp(uint64_t value);
+
+  /*!
+   *  Get the acquisition timestamp for a specific channel.
+   *  Retrieves the timestamp value associated with the trigger event or
+   *  data capture for the specified channel.
+   *  @param channel Fast ADC channel
+   *  @param value Return timestamp value in nanoseconds.
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool timeStampQ(EACQChannel channel, uint64_t *value);
+
+  /*!
+   * Returns the number of valid data points (samples) in the buffer that were
+   * captured before the trigger event occurred. This value indicates how many
+   * samples are available in the pre-trigger portion of the buffer.
+   *
+   * @param value Pointer to uint32_t where the pre-trigger sample count will
+   *        be stored.
+   * @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool preTriggerCounterQ(uint32_t *value);
+
+  /*!
+   * Returns the number of valid data points (samples) in the buffer before the
+   * trigger position for the specified channel. This channel-separated version
+   * works with FPGA support for split trigger mode.
+   *
+   * @param channel The analog input channel:
+   *        - RP_CH_1 (IN1) or RP_CH_3 for 4-input models
+   *        - RP_CH_2 (IN2) or RP_CH_4 for 4-input models
+   * @param value Pointer to uint32_t where the pre-trigger sample count for the
+   *        specified channel will be stored.
+   * @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool preTriggerCounterChQ(EACQChannel channel, uint32_t *value);
+
+  /*!
+   *  Enables or disables interrupt generation for the specified interrupt
+   * event.
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met (edge, level, etc.)
+   *         - ACQ_INT_FILL (1): Buffer full, data ready for processing
+   *  @param enable True to enable interrupt generation, false to disable
+   * (mask).
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnable(EACQIntMode mode, bool enable);
+
+  /*!
+   *  Returns the current interrupt enable/disable status for the specified
+   *  interrupt event.
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met
+   *         - ACQ_INT_FILL (1): Buffer full event
+   *  @param enable Pointer to bool where the current status will be stored:
+   *         - true: Interrupt is enabled
+   *         - false: Interrupt is disabled (masked)
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnableQ(EACQIntMode mode, bool *enable);
+
+  /*!
+   *  Enables or disables interrupt generation for the specified channel and
+   *  interrupt event. Used only in split trigger mode.
+   *  @param channel Fast ADC channel (RP_CH_1, RP_CH_2, RP_CH_3, RP_CH_4)
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met
+   *         - ACQ_INT_FILL (1): Buffer full event
+   *  @param enable True to enable interrupt generation, false to disable
+   * (mask).
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnableCh(EACQChannel channel, EACQIntMode mode, bool enable);
+
+  /*!
+   *  Returns the current interrupt enable/disable status for the specified
+   *  channel and interrupt event. Used only in split trigger mode.
+   *  @param channel Fast ADC channel (RP_CH_1, RP_CH_2, RP_CH_3, RP_CH_4)
+   *  @param mode Interrupt event type:
+   *         - ACQ_INT_TRIGGER (0): Trigger condition met
+   *         - ACQ_INT_FILL (1): Buffer full event
+   *  @param enable Pointer to bool where the current status will be stored:
+   *         - true: Interrupt is enabled
+   *         - false: Interrupt is disabled (masked)
+   *  @return Returns true if the command was called successfully, returns false
+   *         for any other problems.
+   */
+  bool intEnableChQ(EACQChannel channel, EACQIntMode mode, bool *enable);
 
   friend class SCPIRedPitaya;
 

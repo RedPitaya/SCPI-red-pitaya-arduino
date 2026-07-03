@@ -18,6 +18,16 @@ using namespace scpi_rp;
 
 void SCPIAcqData::setInterface(BaseIO *io) { m_io = io; }
 
+bool SCPIAcqData::offset(EACQChannel channel, float offset) {
+  if (m_io == nullptr) return false;
+  return setAcqOffset(m_io, channel, offset);
+}
+
+bool SCPIAcqData::offsetQ(EACQChannel channel, float *offset) {
+  if (m_io == nullptr) return false;
+  return getAcqOffset(m_io, channel, offset);
+}
+
 bool SCPIAcqData::writePositionQ(uint32_t *position) {
   if (m_io == nullptr) return false;
   return getAcqWritePointer(m_io, position);

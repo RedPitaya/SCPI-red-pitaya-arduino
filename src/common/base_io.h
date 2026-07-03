@@ -35,6 +35,7 @@ class BaseIO {
 
   uint64_t atou64_dec(const char *str);
   char *uitoa64_dec(uint64_t value, char *str);
+  uint32_t atou32_dec(const char *str);
 
  protected:
   int checkParamSeparator();

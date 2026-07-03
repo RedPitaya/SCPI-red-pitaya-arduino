@@ -59,7 +59,13 @@ enum EACQTrigger {
   ACQ_CH3_PE = 10,
   ACQ_CH3_NE = 11,
   ACQ_CH4_PE = 12,
-  ACQ_CH4_NE = 13
+  ACQ_CH4_NE = 13,
+  ACQ_CH1_AE = 18,
+  ACQ_CH2_AE = 20,
+  ACQ_EXT_AE = 22,
+  ACQ_AWG_AE = 24,
+  ACQ_CH3_AE = 26,
+  ACQ_CH4_AE = 28
 };
 
 enum EACQPosition {
@@ -67,6 +73,16 @@ enum EACQPosition {
   ACQ_POST_TRIG = 1,
   ACQ_PRE_POST_TRIG = 2
 };
+
+enum EACQIntTrigger { ACQ_TR_OK = 0, ACQ_TR_TIMEOUT = 1, ACQ_TR_ERROR = 2 };
+
+/**
+ * Interrupt event sources for signal acquisition.
+ */
+typedef enum {
+  ACQ_INT_TRIGGER = 0, /**< Trigger condition met (edge, level, etc.) */
+  ACQ_INT_FILL = 1     /**< Buffer full; data ready for processing */
+} EACQIntMode;
 
 }  // namespace scpi_rp
 

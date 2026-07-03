@@ -393,6 +393,26 @@ class SCPIGen {
   bool burstLastValueQ(EGENChannel channel, float *value);
 
   /*!
+   *  Select the output level to be held after the burst ends.
+   *  @param channel Output channel 1/2.
+   *  @param value Set to 'true' to hold the last sample of the generated
+   * signal. Set to 'false' to use the predefined 'Last Value' level.
+   *  @return Returns true if the command was called successfully, false
+   * otherwise.
+   */
+  bool burstUseLastSample(EGENChannel channel, bool value);
+
+  /*!
+   *  Get the current post-burst hold mode.
+   *  @param channel Output channel 1/2.
+   *  @param value Pointer to store the setting: 'true' for last sample,
+   *               'false' for 'Last Value' level.
+   *  @return Returns true if the command was called successfully, false
+   * otherwise.
+   */
+  bool burstUseLastSampleQ(EGENChannel channel, bool *value);
+
+  /*!
    *  Set the number of cycles/periods in one burst (N).
    *  @param channel Out channel 1/2
    *  @param value Sets the number of cycles

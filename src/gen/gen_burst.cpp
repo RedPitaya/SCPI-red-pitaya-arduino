@@ -321,3 +321,41 @@ bool scpi_rp::getGenBurstLastValue(BaseIO *io, EGENChannel channel,
   }
   return readValue();
 }
+
+bool scpi_rp::setGenBurstUseLastSample(BaseIO *io, EGENChannel channel,
+                                       bool state) {
+  constexpr char cmd[] = "SOUR";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = ":BURS:USE:LASTSample ";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return io->writeOnOff(state);
+}
+
+bool scpi_rp::getGenBurstUseLastSample(BaseIO *io, EGENChannel channel,
+                                       bool *state) {
+  constexpr char cmd[] = "SOUR";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = ":BURS:USE:LASTSample?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return io->readOnOff(state);
+}

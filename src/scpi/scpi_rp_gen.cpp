@@ -207,6 +207,16 @@ bool SCPIGen::burstLastValueQ(EGENChannel channel, float *value) {
   return getGenBurstLastValue(m_io, channel, value);
 }
 
+bool SCPIGen::burstUseLastSample(EGENChannel channel, bool value) {
+  if (m_io == nullptr) return false;
+  return setGenBurstUseLastSample(m_io, channel, value);
+}
+
+bool SCPIGen::burstUseLastSampleQ(EGENChannel channel, bool *value) {
+  if (m_io == nullptr) return false;
+  return getGenBurstUseLastSample(m_io, channel, value);
+}
+
 bool SCPIGen::burstNCycles(EGENChannel channel, uint16_t value) {
   if (m_io == nullptr) return false;
   return setGenBurstNCyc(m_io, channel, value);

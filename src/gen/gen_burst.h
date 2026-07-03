@@ -25,6 +25,9 @@ bool getGenBurstInitValue(BaseIO *io, EGENChannel channel, float *value);
 bool setGenBurstLastValue(BaseIO *io, EGENChannel channel, float value);
 bool getGenBurstLastValue(BaseIO *io, EGENChannel channel, float *value);
 
+bool setGenBurstUseLastSample(BaseIO *io, EGENChannel channel, bool state);
+bool getGenBurstUseLastSample(BaseIO *io, EGENChannel channel, bool *state);
+
 }  // namespace scpi_rp
 
 #endif

@@ -56,6 +56,24 @@ bool scpi_rp::setAcqTrigger(BaseIO *io, EACQTrigger trigger) {
   } else if (trigger == ACQ_CH4_NE) {
     constexpr char param[] = "CH4_NE\r\n";
     return io->writeStr(param);
+  } else if (trigger == ACQ_CH1_AE) {
+    constexpr char param[] = "CH1_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH2_AE) {
+    constexpr char param[] = "CH2_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_EXT_AE) {
+    constexpr char param[] = "EXT_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_AWG_AE) {
+    constexpr char param[] = "AWG_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH3_AE) {
+    constexpr char param[] = "CH3_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH4_AE) {
+    constexpr char param[] = "CH4_AE\r\n";
+    return io->writeStr(param);
   }
 
   io->writeCommandSeparator();
@@ -115,6 +133,24 @@ bool scpi_rp::setAcqTriggerCh(BaseIO *io, EACQChannel channel,
     return io->writeStr(param);
   } else if (trigger == ACQ_CH4_NE) {
     constexpr char param[] = " CH4_NE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH1_AE) {
+    constexpr char param[] = " CH1_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH2_AE) {
+    constexpr char param[] = " CH2_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_EXT_AE) {
+    constexpr char param[] = " EXT_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_AWG_AE) {
+    constexpr char param[] = " AWG_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH3_AE) {
+    constexpr char param[] = " CH3_AE\r\n";
+    return io->writeStr(param);
+  } else if (trigger == ACQ_CH4_AE) {
+    constexpr char param[] = " CH4_AE\r\n";
     return io->writeStr(param);
   }
 
@@ -475,5 +511,434 @@ bool scpi_rp::getAcqExtTriggerDebouncerQ(BaseIO *io, double *_value) {
     io->writeCommandSeparator();
     return false;
   }
+  return readValue();
+}
+
+bool scpi_rp::acqTriggerInterruptQ(BaseIO *io, int timeout_ms,
+                                   EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":STAT?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::acqTriggerInterruptChQ(BaseIO *io, EACQChannel channel,
+                                     int timeout_ms, EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":STAT:CH";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd3[] = "?\r\n";
+  if (!io->writeStr(cmd3)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::acqFillInterruptQ(BaseIO *io, int timeout_ms,
+                                EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":FILL?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::acqFillInterruptChQ(BaseIO *io, EACQChannel channel,
+                                  int timeout_ms, EACQIntTrigger *state) {
+  constexpr char cmd[] = "ACQ:TRig:INT";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(timeout_ms)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = ":FILL:CH";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd3[] = "?\r\n";
+  if (!io->writeStr(cmd3)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  auto value = io->read();
+  if (value.isValid) {
+    if (strcmp(value.value, "OK") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_OK;
+    } else if (strcmp(value.value, "TIMEOUT") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_TIMEOUT;
+    } else if (strcmp(value.value, "ERROR") == 0) {
+      *state = EACQIntTrigger::ACQ_TR_ERROR;
+    } else {
+      io->flushCommand(value.next_value);
+      return false;
+    }
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::setAcqTimestamp(BaseIO *io, uint64_t timestamp) {
+  constexpr char cmd[] = "ACQ:TS ";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumberU64(timestamp)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return io->writeCommandSeparator();
+}
+
+bool scpi_rp::getAcqTimestampQ(BaseIO *io, EACQChannel channel,
+                               uint64_t *_value) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *_value = io->atou64_dec(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+  constexpr char cmd[] = "ACQ:TS:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = "?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}
+
+bool scpi_rp::getAcqPreTriggerCounterQ(BaseIO *io, uint32_t *_value) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *_value = io->atou32_dec(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+  constexpr char cmd[] = "ACQ:TRig:PRE:COUNTER?\r\n";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}
+
+bool scpi_rp::getAcqPreTriggerCounterChQ(BaseIO *io, EACQChannel channel,
+                                         uint32_t *_value) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *_value = io->atou32_dec(value.value);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+  constexpr char cmd[] = "ACQ:TRig:PRE:COUNTER:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  constexpr char cmd2[] = "?\r\n";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  return readValue();
+}
+
+bool scpi_rp::setAcqTriggerIntEnable(BaseIO *io, EACQIntMode mode,
+                                     bool enable) {
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE ";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write enable state (1 or 0)
+  if (!io->writeNumber(enable ? 1 : 0)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  return io->writeCommandSeparator();
+}
+
+bool scpi_rp::getAcqTriggerIntEnableQ(BaseIO *io, EACQIntMode mode,
+                                      bool *enable) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *enable = (atoi(value.value) != 0);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE? ";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  return readValue();
+}
+
+bool scpi_rp::setAcqTriggerIntEnableCh(BaseIO *io, EACQChannel channel,
+                                       EACQIntMode mode, bool enable) {
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = " ";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL,";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write enable state (1 or 0)
+  if (!io->writeNumber(enable ? 1 : 0)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  return io->writeCommandSeparator();
+}
+
+bool scpi_rp::getAcqTriggerIntEnableChQ(BaseIO *io, EACQChannel channel,
+                                        EACQIntMode mode, bool *enable) {
+  auto readValue = [&]() {
+    auto value = io->read();
+    if (value.isValid) {
+      *enable = (atoi(value.value) != 0);
+      io->flushCommand(value.next_value);
+      return true;
+    }
+    return false;
+  };
+
+  constexpr char cmd[] = "ACQ:TRig:INT:ENABLE:CH";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  if (!io->writeNumber(channel)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  constexpr char cmd2[] = "? ";
+  if (!io->writeStr(cmd2)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+
+  // Write mode (TRIG or FILL)
+  if (mode == ACQ_INT_TRIGGER) {
+    constexpr char mode_str[] = "TRIG\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else if (mode == ACQ_INT_FILL) {
+    constexpr char mode_str[] = "FILL\r\n";
+    if (!io->writeStr(mode_str)) {
+      io->writeCommandSeparator();
+      return false;
+    }
+  } else {
+    io->writeCommandSeparator();
+    return false;
+  }
+
   return readValue();
 }

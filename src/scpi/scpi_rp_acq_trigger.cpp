@@ -117,3 +117,68 @@ bool SCPIAcqTrigger::debouncerQ(double *value) {
   if (m_io == nullptr) return false;
   return getAcqExtTriggerDebouncerQ(m_io, value);
 }
+
+bool SCPIAcqTrigger::stateIntQ(int timeout_ms, EACQIntTrigger *state) {
+  if (m_io == nullptr) return false;
+  return acqTriggerInterruptQ(m_io, timeout_ms, state);
+}
+
+bool SCPIAcqTrigger::stateIntChQ(EACQChannel channel, int timeout_ms,
+                                 EACQIntTrigger *state) {
+  if (m_io == nullptr) return false;
+  return acqTriggerInterruptChQ(m_io, channel, timeout_ms, state);
+}
+
+bool SCPIAcqTrigger::fillIntQ(int timeout_ms, EACQIntTrigger *state) {
+  if (m_io == nullptr) return false;
+  return acqFillInterruptQ(m_io, timeout_ms, state);
+}
+
+bool SCPIAcqTrigger::fillIntChQ(EACQChannel channel, int timeout_ms,
+                                EACQIntTrigger *state) {
+  if (m_io == nullptr) return false;
+  return acqFillInterruptChQ(m_io, channel, timeout_ms, state);
+}
+
+bool SCPIAcqTrigger::initTimeStamp(uint64_t value) {
+  if (m_io == nullptr) return false;
+  return setAcqTimestamp(m_io, value);
+}
+
+bool SCPIAcqTrigger::timeStampQ(EACQChannel channel, uint64_t *value) {
+  if (m_io == nullptr) return false;
+  return getAcqTimestampQ(m_io, channel, value);
+}
+
+bool SCPIAcqTrigger::preTriggerCounterQ(uint32_t *value) {
+  if (m_io == nullptr) return false;
+  return getAcqPreTriggerCounterQ(m_io, value);
+}
+
+bool SCPIAcqTrigger::preTriggerCounterChQ(EACQChannel channel,
+                                          uint32_t *value) {
+  if (m_io == nullptr) return false;
+  return getAcqPreTriggerCounterChQ(m_io, channel, value);
+}
+
+bool SCPIAcqTrigger::intEnable(EACQIntMode mode, bool enable) {
+  if (m_io == nullptr) return false;
+  return setAcqTriggerIntEnable(m_io, mode, enable);
+}
+
+bool SCPIAcqTrigger::intEnableQ(EACQIntMode mode, bool *enable) {
+  if (m_io == nullptr) return false;
+  return getAcqTriggerIntEnableQ(m_io, mode, enable);
+}
+
+bool SCPIAcqTrigger::intEnableCh(EACQChannel channel, EACQIntMode mode,
+                                 bool enable) {
+  if (m_io == nullptr) return false;
+  return setAcqTriggerIntEnableCh(m_io, channel, mode, enable);
+}
+
+bool SCPIAcqTrigger::intEnableChQ(EACQChannel channel, EACQIntMode mode,
+                                  bool *enable) {
+  if (m_io == nullptr) return false;
+  return getAcqTriggerIntEnableChQ(m_io, channel, mode, enable);
+}

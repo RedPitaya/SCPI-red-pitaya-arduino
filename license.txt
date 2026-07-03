@@ -1,4 +1,4 @@
-Copyright (c) 2025 Red Pitaya
+Copyright (c) 2026 Red Pitaya
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -27,6 +27,29 @@ class SCPIAcqData {
   ~SCPIAcqData(){};
 
   /*!
+   *  Set the trigger offset value for a specific channel.
+   *  Adds a voltage offset when requesting data from the specified channel.
+   *  Only affects float and double data types.
+   *  @param channel Fast ADC channel
+   *  @param offset Offset value in Volts.
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool offset(EACQChannel channel, float offset);
+
+  /*!
+   *  Get the trigger offset value for a specific channel.
+   *  Retrieves the currently configured voltage offset for the specified
+   * channel that is added when requesting float or double data types. Raw data
+   * remains unchanged.
+   *  @param channel Fast ADC channel
+   *  @param offset Return offset value in Volts.
+   *  @return Returns true if the command was called successfully, returns false
+   * for any other problems.
+   */
+  bool offsetQ(EACQChannel channel, float *offset);
+
+  /*!
    *  Returns the current position of the write pointer, i.e the index of the
    *  most recent sample in the buffer.
    *  @param position Buffer position in samples

@@ -21,7 +21,7 @@ bool scpi_rp::setSYSLog(BaseIO *io, ESYSLog mode) {
     constexpr char param[] = "CONSOLE\r\n";
     return io->writeStr(param);
   }
-  if (mode == ESYSLog::OFF) {
+  if (mode == ESYSLog::SYS_LOG) {
     constexpr char param[] = "SYS_LOG\r\n";
     return io->writeStr(param);
   }
@@ -78,6 +78,8 @@ bool scpi_rp::getSYSTime(BaseIO *io, uint8_t *hour, uint8_t *min,
 
 bool scpi_rp::setSYSDate(BaseIO *io, uint16_t year, uint8_t month,
                          uint8_t day) {
+  if (month > 12) return false;
+  if (day > 31) return false;
   constexpr char cmd[] = "SYSTem:DATE \"";
   if (!io->writeStr(cmd)) {
     io->writeCommandSeparator();
@@ -138,6 +140,22 @@ bool scpi_rp::getSYSBoardID(BaseIO *io, uint32_t *id) {
 
 bool scpi_rp::getSYSBoardName(BaseIO *io, char *name, scpi_size size) {
   constexpr char cmd[] = "SYSTem:BRD:Name?\r\n";
+  if (!io->writeStr(cmd)) {
+    io->writeCommandSeparator();
+    return false;
+  }
+  auto value = io->read();
+  if (value.isValid) {
+    memset(name, 0, size);
+    strncpy(name, value.value, value.size < size - 1 ? value.size : size - 1);
+    io->flushCommand(value.next_value);
+    return true;
+  }
+  return false;
+}
+
+bool scpi_rp::getSYSVersion(BaseIO *io, char *name, scpi_size size) {
+  constexpr char cmd[] = "SYSTem:VERSion?\r\n";
   if (!io->writeStr(cmd)) {
     io->writeCommandSeparator();
     return false;
@@ -298,7 +316,7 @@ bool scpi_rp::getErr_c(BaseIO *io, uint16_t *_value) {
 }
 
 bool scpi_rp::getErr_n(BaseIO *io, char *name, scpi_size size) {
-  constexpr char cmd[] = "SYST:ERR:NEXT?r\n";
+  constexpr char cmd[] = "SYST:ERR:NEXT?\r\n";
   if (!io->writeStr(cmd)) {
     io->writeCommandSeparator();
     return false;
